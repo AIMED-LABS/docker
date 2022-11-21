@@ -45,4 +45,7 @@ RUN  /root/bin/installdependencies.sh
 COPY entrypoint.sh runsvc.sh ./
 RUN sudo chmod u+x ./entrypoint.sh ./runsvc.sh
 
+RUN install -m 600 -D /dev/null ~/.ssh/known_hosts
+RUN ssh-keyscan -H github.com >> ~/.ssh/known_hosts
+
 ENTRYPOINT ["./entrypoint.sh"]
