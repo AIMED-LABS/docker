@@ -18,19 +18,5 @@ else
     ./config.sh --unattended --url https://github.com/${RUNNER_REGISTER_TO} --token $(curl ${KMS_SERVER_ADDR}/${RUNNER_REGISTER_TO}/registration-token) ${ADDITIONAL_FLAGS} --labels "${RUNNER_LABELS}" --disableupdate
 fi
 
-remove() {
-if [[ "${RUNNER_REGISTER_TO}" == *\/* ]]; then
-    # Contain "/", to Org
-    ./config.sh remove --unattended --token $(curl ${KMS_SERVER_ADDR}/repo/${RUNNER_REGISTER_TO}/remove-token)
-else
-    # Not contain "/", to Repo
-    ./config.sh remove --unattended --token $(curl ${KMS_SERVER_ADDR}/${RUNNER_REGISTER_TO}/remove-token)
-fi
-}
-
-trap 'remove; exit 130' INT
-trap 'remove; exit 143' TERM
-
-./runsvc.sh "$*" &
-
-wait $!
+./run.sh
+echo '- Done with this runner'
