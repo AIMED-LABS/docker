@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  kms:
+    image: ghcr.io/aimed-labs/github-runner-kms:latest
+    restart: always
+    environment:
+      PAT_aimed-labs: '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'
+
+  runner:
+    image: ghcr.io/aimed-labs/github-runner-amd64:focal-2.299.1
+    restart: always
+    environment:
+      RUNNER_REGISTER_TO: 'aimed-labs'
+      RUNNER_LABELS: 'docker,aimed-labs-local,self-hosted-dev'
+      ADDITIONAL_FLAGS: '--ephemeral'
+      KMS_SERVER_ADDR: 'http://kms:3000'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - kms
