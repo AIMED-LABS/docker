@@ -5,7 +5,7 @@ services:
     image: ghcr.io/aimed-labs/github-runner-kms:latest
     restart: always
     environment:
-      PAT_aimed-labs: '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'
+      PAT_aimed-labs: ${PAT_aimed-labs]
 
   runner:
     image: ghcr.io/aimed-labs/github-runner-amd64:focal-2.299.1
