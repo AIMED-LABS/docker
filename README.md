@@ -8,6 +8,12 @@
     3. To stop the stack: `docker stack rm <stack-name>`
     4. To scale a service, use following after starting the stack `docker service scale <service-name, ex: runner>=<number of instances, ex:10>`
 4. Swarm is important so since for ephemeral mode, swarm will create a new instance and deploy it
+5. The final deployment is done as following :
+```
+$ DOCKER_HOST="ssh://root@github-runner-hetzner" docker stack deploy -c docker-compose.yml gh-self-hosted-runner
+$ DOCKER_HOST="ssh://root@github-runner-hetzner" docker service scale gh-self-hosted-runner_runner=10
+```
+
 
 
 Text below is from original fork-ed repo
