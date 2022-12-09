@@ -40,8 +40,8 @@ jobs:
       - name: Build and push AMD64 Version
         uses: docker/build-push-action@v2
         with:
-          context: ./amd64/
-          file: ./amd64/Dockerfile
+          context: ./src/
+          file: ./src/Dockerfile
           platforms: linux/amd64
           push: true
           build-args: GITHUB_RUNNER_VERSION=${{ github.event.inputs.github-runner-version }}
