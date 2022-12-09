@@ -11,6 +11,8 @@ on:
 jobs:
   build-amd64-version:
     runs-on: ubuntu-latest
+    env:
+      PAT: ${{ secrets.SHAKTIMAN_PAT }}
     steps:
       - uses: actions/checkout@v3
       
