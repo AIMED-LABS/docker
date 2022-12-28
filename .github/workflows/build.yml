@@ -1,4 +1,4 @@
-name: Build Docker Images
+name: Build Runner Image
 
 on:
   workflow_dispatch:
@@ -7,87 +7,16 @@ on:
         description: 'Version on github runner(in https://github.com/actions/runner), e.g: 2.290.0'
         required: true
         default: '2.299.1'
-      build-github-runner:
-        description: ''
-        type: boolean
-        required: true
-        default: false
-      build-nginx:
-        type: boolean
-        description: ''
-        required: true
-        default: true
-
-concurrency:
-  group: ${{ github.workflow }}
-  cancel-in-progress: true
 
 jobs:
-
-  nginx:
-    if: ${{ inputs.build-nginx }}
-    defaults:
-      run:
-        shell: bash
-        working-directory: ./nginx
+  build-amd64-version:
     runs-on: ubuntu-latest
-    env:
-      PAT: ${{ secrets.SHAKTIMAN_PAT }}
-      CACHE_DIR: '.buildx-cache'
-      IMAGE_NAME: 'nginx:1.23.3-alpine-slim'
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v1
-        with:
-          registry: ghcr.io
-          username: aimed-labs
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-
-      - name: Cache Docker layers
-        uses: actions/cache@v3
-        with:
-          path: /tmp/${{ env.CACHE_DIR }}
-          key: ${{ runner.os }}-buildx-amd64-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-amd64
-
-      - name: Build and push AMD64 Version
-        uses: docker/build-push-action@v2
-        with:
-          context: ./
-          file: ./Dockerfile
-          platforms: linux/amd64
-          push: true
-          tags: |
-            ghcr.io/aimed-labs/${{ env.IMAGE_NAME }}
-          cache-from: type=local,src=/tmp/${{ env.CACHE_DIR }}
-          cache-to: type=local,dest=/tmp/.${{ env.CACHE_DIR }}-new,mode=max
-
-      - name: Move cache
-        run: |
-          rm -rf /tmp/${{ env.CACHE_DIR }}
-          mv /tmp/${{ env.CACHE_DIR }}-new /tmp/${{ env.CACHE_DIR }}
-
-
-  github-runner:
-    if: ${{ inputs.build-github-runner }}
     defaults:
       run:
         shell: bash
         working-directory: ./github-runner
-    runs-on: ubuntu-latest
     env:
       PAT: ${{ secrets.SHAKTIMAN_PAT }}
-      CACHE_DIR: '.buildx-cache'
-      IMAGE_NAME: github-runner:focal-${{ github.event.inputs.github-runner-version }}
     steps:
       - uses: actions/checkout@v3
 
@@ -107,7 +36,7 @@ jobs:
       - name: Cache Docker layers
         uses: actions/cache@v3
         with:
-          path: /tmp/${{ env.CACHE_DIR }}
+          path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx-amd64-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-buildx-amd64
@@ -118,14 +47,15 @@ jobs:
           context: ./
           file: ./Dockerfile
           platforms: linux/amd64
-          build-args: GITHUB_RUNNER_VERSION=${{ github.event.inputs.github-runner-version }}
           push: true
+          build-args: GITHUB_RUNNER_VERSION=${{ github.event.inputs.github-runner-version }}
           tags: |
-            ghcr.io/aimed-labs/${{ env.IMAGE_NAME }}
-          cache-from: type=local,src=/tmp/${{ env.CACHE_DIR }}
-          cache-to: type=local,dest=/tmp/.${{ env.CACHE_DIR }}-new,mode=max
+            ghcr.io/aimed-labs/github-runner-amd64:focal-${{ github.event.inputs.github-runner-version }}
+
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 
       - name: Move cache
         run: |
-          rm -rf /tmp/${{ env.CACHE_DIR }}
-          mv /tmp/${{ env.CACHE_DIR }}-new /tmp/${{ env.CACHE_DIR }}
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
