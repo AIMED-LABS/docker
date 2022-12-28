@@ -67,14 +67,14 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: |
-            ghcr.io/aimed-labs/${{ IMAGE_NAME }}
-          cache-from: type=local,src=/tmp/${{ CACHE_DIR }}
-          cache-to: type=local,dest=/tmp/.${{ CACHE_DIR }}-new,mode=max
+            ghcr.io/aimed-labs/${{ env.IMAGE_NAME }}
+          cache-from: type=local,src=/tmp/${{ env.CACHE_DIR }}
+          cache-to: type=local,dest=/tmp/.${{ env.CACHE_DIR }}-new,mode=max
 
       - name: Move cache
         run: |
-          rm -rf /tmp/${{ CACHE_DIR }}
-          mv /tmp/${{ CACHE_DIR }}-new /tmp/${{ CACHE_DIR }}
+          rm -rf /tmp/${{ env.CACHE_DIR }}
+          mv /tmp/${{ env.CACHE_DIR }}-new /tmp/${{ env.CACHE_DIR }}
 
 
   github-runner:
@@ -107,7 +107,7 @@ jobs:
       - name: Cache Docker layers
         uses: actions/cache@v3
         with:
-          path: /tmp/${{ CACHE_DIR }}
+          path: /tmp/${{ env.CACHE_DIR }}
           key: ${{ runner.os }}-buildx-amd64-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-buildx-amd64
@@ -121,11 +121,11 @@ jobs:
           build-args: GITHUB_RUNNER_VERSION=${{ github.event.inputs.github-runner-version }}
           push: true
           tags: |
-            ghcr.io/aimed-labs/${{ IMAGE_NAME }}
-          cache-from: type=local,src=/tmp/${{ CACHE_DIR }}
-          cache-to: type=local,dest=/tmp/.${{ CACHE_DIR }}-new,mode=max
+            ghcr.io/aimed-labs/${{ env.IMAGE_NAME }}
+          cache-from: type=local,src=/tmp/${{ env.CACHE_DIR }}
+          cache-to: type=local,dest=/tmp/.${{ env.CACHE_DIR }}-new,mode=max
 
       - name: Move cache
         run: |
-          rm -rf /tmp/${{ CACHE_DIR }}
-          mv /tmp/${{ CACHE_DIR }}-new /tmp/${{ CACHE_DIR }}
+          rm -rf /tmp/${{ env.CACHE_DIR }}
+          mv /tmp/${{ env.CACHE_DIR }}-new /tmp/${{ env.CACHE_DIR }}
