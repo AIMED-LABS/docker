@@ -25,7 +25,7 @@ concurrency:
 jobs:
 
   nginx:
-    if: ${{ inputs.build-github-runner }}
+    if: ${{ inputs.build-nginx }}
     defaults:
       run:
         shell: bash
