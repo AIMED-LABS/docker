@@ -9,9 +9,12 @@ on:
         default: '2.299.1'
       build-github-runner:
         description: ''
-        required: false
+        required: true
         default: false
       build-nginx:
+        description: ''
+        required: true
+        default: true
 
 concurrency:
   group: ${{ github.workflow }}
