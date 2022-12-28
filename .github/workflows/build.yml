@@ -1,4 +1,4 @@
-name: Build Runner Image
+name: Build Container Image
 
 on:
   workflow_dispatch:
@@ -11,10 +11,6 @@ on:
 jobs:
   build-amd64-version:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash
-        working-directory: ./github-runner
     env:
       PAT: ${{ secrets.SHAKTIMAN_PAT }}
     steps:
@@ -44,13 +40,13 @@ jobs:
       - name: Build and push AMD64 Version
         uses: docker/build-push-action@v2
         with:
-          context: ./
-          file: ./Dockerfile
+          context: ./github-runner
+          file: ./github-runner/Dockerfile
           platforms: linux/amd64
           push: true
           build-args: GITHUB_RUNNER_VERSION=${{ github.event.inputs.github-runner-version }}
           tags: |
-            ghcr.io/aimed-labs/github-runner-amd64:focal-${{ github.event.inputs.github-runner-version }}
+            ghcr.io/aimed-labs/github-runner:focal-${{ github.event.inputs.github-runner-version }}
 
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
