@@ -26,7 +26,7 @@ curl -fsSL https://raw.githubusercontent.com/Aimed-Labs/docker/master/nginx-with
          project-name: 'aimed-labs_nginx-with-acme-ssl'
          host-address: ${{ secrets.<server-domain-name-or-ip> }}
          host-ssh-user: ${{ secrets.<server-user-that-is-accesible> }}
-         filter: 'label=PHL_PROJECT=true'
+         filter: 'label=AIMED_LABS=true'
          ssh-private-key-base64: ${{ secrets.<private-key-in-base64> }}
 ```
 
