@@ -2,7 +2,7 @@ version: '2'
 
 services:
   nginx-proxy:
-    image: ghcr.io/nginx-proxy/nginx-proxy:1.2.0
+    image: nginxproxy/nginx-proxy:1.2.0
     ports:
       - "80:80"
       - "443:443"
@@ -16,7 +16,7 @@ services:
     restart: unless-stopped
 
   acme-companion:
-    image: ghcr.io/nginx-proxy/acme-companion:2.2.3
+    image: nginxproxy/acme-companion:2.2.4
     depends_on:
       - nginx-proxy
     environment:
