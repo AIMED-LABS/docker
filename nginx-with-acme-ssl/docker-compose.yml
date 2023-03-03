@@ -2,7 +2,7 @@ version: '2'
 
 services:
   nginx-proxy:
-    image: ghcr.io/nginx-proxy/nginx-proxy:1.0.4-alpine
+    image: ghcr.io/nginx-proxy/nginx-proxy:1.2.0
     ports:
       - "80:80"
       - "443:443"
